@@ -88,6 +88,24 @@ async function processPost(post: PostInfo)
     }
 }
 
-dc.getPostList({ page: 1, galleryId: targetGalleryId, boardType: 'all' })
-    .then(posts => Promise.all(posts.map(processPost)))
-    .then(() => console.log('Done'))
+async function sleep(ms: number)
+{
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function run()
+{
+    const posts = await dc.getPostList({ page: 1, galleryId: targetGalleryId, boardType: 'all' })
+    await Promise.all(posts.map(processPost))
+}
+
+async function main()
+{
+    for(let i=0; i!=4; ++i){
+        await run();
+        console.log(`run#${i+1} done.`)
+        if(i+1!=4) await sleep(60000);
+    }
+}
+
+main()
