@@ -21,7 +21,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Restore Cookies
+        uses: actions/cache@v4
+        with:
+          path: cookies.json
+          key: cookies
+
       - name: Run
         run: npx ts-node index.ts
         env:
-            COOKIE_JAR: ${{ secrets.COOKIE_JAR }}
+            ID: ${{ secrets.ID }}
+            PASSWORD: ${{ secrets.PASSWORD }}
+
+      - name: Cache Cookies
+        uses: actions/cache@v4
+        with:
+          path: cookies.json
+          key: cookies
