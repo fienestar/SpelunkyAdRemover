@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@gurumnyang/dcinside.js": "1.11.0",
+    "tough-cookie": "^6.0.0",
+    "unicode-confusables": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.2"
+  },
+  "overrides": {
+    "@gurumnyang/dcinside.js": {
+      "axios-cookiejar-support": "5.0.1"
+    }
+  }
+}
