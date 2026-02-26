@@ -59,6 +59,13 @@ class CookieJarRepository
         }
     }
 
+    static invalidate()
+    {
+        if(fs.existsSync(this.COOKIES_FILE_PATH)){
+            fs.rmSync(this.COOKIES_FILE_PATH);
+        }
+    }
+
     static async getJar(): Promise<CookieJar>
     {
         if(!this.jarPromise){
@@ -74,16 +81,24 @@ async function processPost(post: PostInfo)
     const tokenized = tokenize(title);
     const hasAV = tokenized.find(token => token.toUpperCase() === 'AV');
     if(hasAV && title != post.title){
-        const result = await dc.deletePost({
+        async function deleteTargetPost()
+        {
+            return await dc.deletePost({
             galleryId: targetGalleryId,
             postId: post.id,
             jar: await CookieJarRepository.getJar()
         });
+        }
 
+        for(let i=0; i!=2; ++i){
+            let result = await deleteTargetPost();
         if(result.success){
             console.log(`Deleted post ${post.id} - ${title}"`);
+                break;
         } else {
             console.log(`Failed to delete post ${post.id} - ${title}: (${result.responseStatus}) ${result.message}`);
+                if(i==0) CookieJarRepository.invalidate();
+            }
         }
     }
 }
